@@ -37,7 +37,6 @@ def verify_password(password: str, stored: str) -> tuple[bool, Optional[str]]:
             return hmac.compare_digest(digest.hex(), digest_hex), None
         except (ValueError, TypeError):
             return False, None
-    # Поддержка старых учебных БД с прежним SHA-256-хешем и автоматическая миграция при входе.
     legacy = hashlib.sha256(('prokat_salt_2026' + password).encode()).hexdigest()
     return hmac.compare_digest(legacy, stored), hash_password(password) if hmac.compare_digest(legacy, stored) else None
 
@@ -112,7 +111,6 @@ class ReturnData(BaseModel):
     condition_in: str = Field(default='Исправно', min_length=1, max_length=300)
     damage_fine: float = Field(default=0, ge=0, le=10000000)
 class RoleData(BaseModel):
-    # Новых администраторов назначают вручную в БД/конфигурации, не из обычной панели.
     role: Literal['client','manager']
 
 @app.get('/')
@@ -243,8 +241,6 @@ def writeoff(item_id:int,user=Depends(require_roles('admin'))):
 
 @app.put('/api/admin/users/{user_id}/role')
 def change_user_role(user_id:int,data:RoleData,user=Depends(require_roles('admin'))):
-    # Защита от случайной потери административного доступа:
-    # нельзя менять собственную роль и нельзя понижать/переназначать существующего администратора.
     if user_id == user['id']:
         raise HTTPException(400,'Нельзя изменять собственную роль')
     with db() as con:
