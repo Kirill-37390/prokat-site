@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Прокат оборудования
+  </title>
+  <link href="/static/style.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <header>
+   <h1>
+    Прокат оборудования
+   </h1>
+   <div id="userbox">
+    Вы не вошли
+   </div>
+  </header>
+  <nav>
+   <button onclick="show('catalog')">
+    Каталог
+   </button>
+   <button data-role="client,manager,admin" onclick="show('account')">
+    Мои аренды
+   </button>
+   <button data-role="manager,admin" onclick="show('manage')">
+    Менеджер
+   </button>
+   <button data-role="admin" onclick="show('admin')">
+    Администратор
+   </button>
+  </nav>
+  <main>
+   <section class="panel" id="auth">
+    <h2>
+     Вход
+    </h2>
+    <div class="row">
+     <input id="email" placeholder="Почта" value="client@prokat.local"/>
+     <input id="password" placeholder="Пароль" type="password" value="client123"/>
+     <button onclick="login()">
+      Войти
+     </button>
+    </div>
+    <p class="hint">
+     Тестовые аккаунты: client@prokat.local / client123; manager@prokat.local / manager123; admin@prokat.local / admin123
+    </p>
+    <h3>
+     Регистрация клиента
+    </h3>
+    <div class="row">
+     <input id="regname" placeholder="Имя"/>
+     <input id="regemail" placeholder="Почта"/>
+     <input id="regpass" placeholder="Пароль" type="password"/>
+     <button onclick="register()">
+      Зарегистрироваться
+     </button>
+    </div>
+   </section>
+   <section class="panel" id="catalog">
+    <h2>
+     Каталог оборудования
+    </h2>
+    <div class="row">
+     <input id="search" oninput="loadCatalog()" placeholder="Поиск по названию"/>
+     <select id="category" onchange="loadCatalog()">
+      <option value="">
+       Все категории
+      </option>
+      <option>
+       Туризм
+      </option>
+      <option>
+       Спорт
+      </option>
+      <option>
+       Строительство
+      </option>
+     </select>
+    </div>
+    <div class="cards" id="items">
+    </div>
+   </section>
+   <section class="panel hidden" id="account">
+    <h2>
+     Мои бронирования
+    </h2>
+    <div id="mybookings">
+    </div>
+   </section>
+   <section class="panel hidden" id="manage">
+    <h2>
+     Рабочее место менеджера
+    </h2>
+    <button onclick="loadManage()">
+     Обновить список
+    </button>
+    <div id="managebookings">
+    </div>
+    <h3>
+     Статистика
+    </h3>
+    <div id="stats">
+    </div>
+   </section>
+   <section class="panel hidden" id="admin">
+    <h2>
+     Панель администратора
+    </h2>
+    <h3>
+     Добавить оборудование
+    </h3>
+    <div class="row">
+     <input id="newname" placeholder="Название"/>
+     <input id="newcat" placeholder="Категория"/>
+     <input id="newprice" placeholder="Цена за сутки" type="number"/>
+     <input id="newqty" placeholder="Количество" type="number"/>
+     <button onclick="addItem()">
+      Добавить
+     </button>
+    </div>
+    <div id="adminitems">
+    </div>
+    <h3>
+     Пользователи
+    </h3>
+    <div id="users">
+    </div>
+   </section>
+  </main>
+  <div id="bookingModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+   <div class="modal-card">
+    <button class="modal-close" type="button" onclick="closeBooking()" aria-label="Закрыть">×</button>
+    <h2 id="bookingTitle">Бронирование оборудования</h2>
+    <p id="bookingItemName"></p>
+    <label for="bookingStart">Дата начала</label>
+    <input id="bookingStart" type="date" required/>
+    <label for="bookingEnd">Дата окончания</label>
+    <input id="bookingEnd" type="date" required/>
+    <p class="hint">Выберите даты аренды. Стоимость рассчитается автоматически после подтверждения.</p>
+    <div class="modal-actions">
+     <button type="button" class="secondary" onclick="closeBooking()">Отмена</button>
+     <button type="button" id="confirmBooking" onclick="submitBooking()">Подтвердить бронь</button>
+    </div>
+   </div>
+  </div>
+  <div id="message" role="status" aria-live="polite">
+  </div>
+  <script src="/static/app.js">
+  </script>
+ </body>
+</html>
+
